@@ -42,14 +42,8 @@ def get_parameter(parameter_name):
     #    response = ssm.get_parameter(Name=f"{parameter_path}{parameter_name}", WithDecryption=True)
     #    return response['Parameter']['Value']
     #except ssm.exceptions.ParameterNotFound as e:
-        temp = {
-            "dbname": "django",
-            "user": "admin",
-            "password": "admin123",
-            "endpoint": "10.0.118.26",
-            "port": "3306"
-        }
-        return temp[parameter_name]
+ 
+    return 
 db_dbname = get_parameter('dbname')
 db_user = get_parameter('user')
 db_password = get_parameter('password')
@@ -118,11 +112,11 @@ WSGI_APPLICATION = 'django_ecommerce.wsgi.application'
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": "django",
-        "USER": "admin",
-        "PASSWORD": "admin123",
-        "HOST": "10.0.118.26",
-        "PORT": "3306"
+        "NAME": db_dbname,
+        "USER": db_user,
+        "PASSWORD": db_password,
+        "HOST": db_endpoint,
+        "PORT": db_port
     },
     'sqlite': {
         'ENGINE': 'django.db.backends.sqlite3',

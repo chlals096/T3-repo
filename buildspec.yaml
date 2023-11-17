@@ -1,0 +1,20 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.8
+  pre_build:
+    commands:
+      - echo "Installing dependencies or performing pre-build steps"
+  build:
+    commands:
+      - echo "Building the code"
+  post_build:
+    commands:
+      - aws s3 cp . s3://t3-backup-test/script --recursive
+      # 또는 특정 디렉토리만 업로드하려면 아래와 같이 사용합니다.
+      # - aws s3 cp your-directory s3://your-s3-bucket/your-target-directory --recursive
+
+artifacts:
+  files: '**/*'

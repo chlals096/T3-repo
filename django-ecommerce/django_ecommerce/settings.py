@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 import os
 import boto3
 from botocore.exceptions import NoCredentialsError
-
+#from django.core.management.utils import get_random_secret_key
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -22,7 +22,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '&0er(t#&rcq714(8huxq15l=wobe#muvrq%wnzu=qpb==$d^r)'
+
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -38,17 +39,21 @@ ssm = boto3.client('ssm', region_name=aws_region)
 
 
 def get_parameter(parameter_name):
-    #try:
-    #    response = ssm.get_parameter(Name=f"{parameter_path}{parameter_name}", WithDecryption=True)
-    #    return response['Parameter']['Value']
-    #except ssm.exceptions.ParameterNotFound as e:
- 
-    return 
+    try:
+        response = ssm.get_parameter(Name=f"{parameter_path}{parameter_name}", WithDecryption=True)
+        return response['Parameter']['Value']
+    except ssm.exceptions.ParameterNotFound as e:
+        # 파라미터를 찾을 수 없는 경우 예외 처리
+        return 
 db_dbname = get_parameter('dbname')
 db_user = get_parameter('user')
 db_password = get_parameter('password')
 db_endpoint = get_parameter('endpoint')
 db_port = get_parameter('port')
+
+
+
+SECRET_KEY = get_parameter('django-key')
 
 # Application definition
 
@@ -110,13 +115,16 @@ WSGI_APPLICATION = 'django_ecommerce.wsgi.application'
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 DATABASES = {
-    "default": {
+        "default": {
         "ENGINE": "django.db.backends.mysql",
         "NAME": db_dbname,
         "USER": db_user,
         "PASSWORD": db_password,
         "HOST": db_endpoint,
-        "PORT": db_port
+        "PORT": db_port,
+        "TEST": {
+          "NAME": "mytestdatabase", # 추가 
+      },   
     },
     'sqlite': {
         'ENGINE': 'django.db.backends.sqlite3',

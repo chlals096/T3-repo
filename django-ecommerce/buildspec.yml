@@ -20,7 +20,7 @@ phases:
       - python3 -c "import sqlite3; print(sqlite3.sqlite_version)"
 
       - pwd
-      - cd ..
+      - cd ../django-ecommerce/
       - python3 -m venv venv
       - source venv/bin/activate
       - pip install -r requirements.txt
